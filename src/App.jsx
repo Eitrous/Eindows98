@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import styled from 'styled-components';
 import { Rnd } from 'react-rnd';
-import classNames from 'classnames';
 import {
   Window,
   WindowHeader,

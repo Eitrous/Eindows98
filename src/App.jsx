@@ -12,6 +12,8 @@ import {
   MenuList,
   MenuListItem,
   Separator,
+  TextInput,
+  TextField,
 } from 'react95';
 
 /* 导入图标资产 */
@@ -40,11 +42,13 @@ const APPLICATIONS = [
     id: 'myComputer',
     title: '我的电脑',
     icon: myComputerIcon,
+    menu: true,
   },
   {
     id: 'onlineNeighbor',
     title: '网上邻居',
     icon: onlineNeighborIcon,
+    menu: true,
   },
   {
     id: 'blog',
@@ -55,6 +59,7 @@ const APPLICATIONS = [
     id: 'notes',
     title: '笔记',
     icon: foldMQIcon,
+    menu: true,
   },
   {
     id: 'recycler',
@@ -92,7 +97,7 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // 动作
+  // 行为
   // 打开窗口
   const handleOpen = (app) => {
     const isAlreadyOpen = openedWindows.find((w) => w.id === app.id);
@@ -151,6 +156,7 @@ function App() {
   const bringToFront = (id) => {
     const newZIndex = topZIndex + 1;
     setTopZIndex(newZIndex);
+    setFocusedWindow(id);
     setOpenedWindows(
       openedWindows.map((w) => {
         if (w.id === id) {
@@ -257,6 +263,11 @@ function App() {
           : w,
       ),
     );
+  };
+
+  // 关机，跳转到正常页面
+  const shutDown = () => {
+
   };
 
   return (
@@ -457,7 +468,7 @@ function App() {
                 <Window className='window'>
                   <WindowHeader 
                     className='window-title' 
-                    active={ focusedWindow === window.id }
+                    active={ window.zIndex === topZIndex }
                   >
                     <span
                       style={{
@@ -561,8 +572,8 @@ function App() {
       })}
 
       {/* 任务栏 */}
-      <AppBar style={{ top: "auto", bottom: 0, zIndex: 9999 }}>
-        <Toolbar style={{ justifyContent: 'space-between' }}>
+      <AppBar style={{ bottom: 0, top: 'auto', height: '40px', zIndex: 9999 }}>
+        <Toolbar style={{ justifyContent: 'space-between', height: '100%', padding: '0 4px' }}>
           <div 
             style={{
               display: 'flex',
@@ -574,13 +585,195 @@ function App() {
               onClick={toggleStartMenu}
               active={startMenuOpen}
               style={{
-                fontWeight: 'bold',
-                marginRight: '6px',
+                height: '32px',
+                fontWeight: 'normal',
                 fontSize: '16px',
               }}
             >
-              <span style={{ marginRight: '4px' }}>#</span>开始
+              <span style={{ marginRight: '4px' }}>🏁</span>开始
             </Button>
+            <Separator orientation= 'vertical' size='30px' className='barSeparator' style={{ marginLeft: '4px', marginRight: '4px' }} />
+
+            {/* 固定应用 */}
+            
+            <Separator orientation= 'vertical' size='30px' className='barSeparator' style={{ marginLeft: '4px', marginRight: '4px' }} />
+
+            {/* 开始菜单 */}
+            {startMenuOpen && (
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '100%',
+                  left: 0,
+                  marginBottom: '4px',
+                  display: 'flex',
+                  background: '#c0c0c0',
+                  border: '2px solid',
+                  borderColor: '#ffffff #000000 #000000 #ffffff',
+                  padding: '2px',
+                  zIndex: 10000,
+                }}
+              >
+                <div
+                  style={{
+                    width: '26px',
+                    background: 'linear-gradient(to bottom, #000080, #000080)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <span
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: '25px',
+                      position: 'absolute',
+                      bottom: '5px',
+                      left: '32px',
+                      transform: 'rotate(-90deg)',
+                      transformOrigin: 'bottom left',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: 'sans-serif',
+                        fontWeight: '900',
+                      }}
+                    >
+                      Eindows
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: 'sans-serif',
+                        fontWeight: '400',
+                        fontSize: '24px',
+                        marginLeft: '1px',
+                      }}
+                    >
+                      ⑨8
+                    </span>
+                  </span>
+              </div>
+
+              <MenuList
+                style={{
+                  boxShadow: 'none',
+                  border: 'none',
+                  padding: 0.
+                }}
+              >
+
+                {/* 桌面应用 */}
+                {APPLICATIONS.map(app => {
+                  if (app.menu) {
+                    return (
+                      <>
+                        <MenuListItem
+                          onClick={() => {
+                            handleMenuClick();
+                            handleOpen(app);
+                          }}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                            gap: '10px',
+                            cursor: 'default',
+                            padding: '5px 10px',
+                          }}
+                        >
+                          <span style={{ marginRight: '10px' }}>
+                            <img
+                              src={app.icon}
+                              style={{
+                                height: '30px',
+                                marginTop: '15px'
+                              }}
+                            />
+                          </span>
+                          <span style={{ textAlign: 'left' }}>
+                            {app.title}
+                          </span>
+                        </MenuListItem>
+                      </>
+                    );
+                  }
+                })}
+                <Separator />
+                {/* 其它应用 */}
+
+                {/* 特殊按键 */}
+                <MenuListItem
+                  onClick={() => {
+                    shutDown();
+                    handleMenuClick();
+                  }}
+                >
+                  <span style={{ marginRight: '10px' }}>
+                    🏁
+                  </span>
+                  关闭系统
+                </MenuListItem>
+              </MenuList>
+            </div>
+          )}
+
+          {/* 任务栏按钮 */}
+          {openedWindows.map((window) => (
+            <Button
+              key={window.id}
+              active={!window.isMinimized && window.zIndex === topZIndex}
+              onClick={() => {
+                if (window.isMaximized) {
+                  handleMinimize(window.id);
+                  bringToFront(window.id);
+                }
+                else {
+                  if (window.zIndex === topZIndex) {
+                    handleMinimize(window.id);
+                  }
+                  else {
+                    bringToFront(window.id);
+                  }
+                }
+              }
+            }
+            style={{
+              fontWeight: 'bold',
+              height: '32px',
+              marginRight: '4px',
+              minWidth: '180px',
+              maxWidth: '200px',
+              justifyContent: 'flex-start',
+            }}
+          >
+            <span style={{ marginRight: '4px' }}>
+              <img
+                src={window.icon}
+                style={{
+                  height: '25px',
+                }}
+              />
+            </span>
+            {window.title.length > 6 ? window.title.substring(0, 6) + '...' : window.title}
+          </Button>
+          ))}
+          
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Separator orientation='vertical' size='30px' className='barSeparator' style={{ marginLeft: '4px', marginRight: '4px' }} />
+          <Button 
+            variant='flat'
+            disabled
+            style={{
+              height: '30px',
+              fontSize: '16px',
+              fontWeight: 'lighter'
+            }}
+          >
+            {currentTime}
+          </Button>
           </div>
         </Toolbar>
       </AppBar>

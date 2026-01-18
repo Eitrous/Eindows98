@@ -47,3 +47,8 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.barSeparator {
+  margin-left: 4px;
+  margin-right: 4px;
+}

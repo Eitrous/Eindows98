@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'Zpix';
+  src: url('./assets/fonts/zpix.woff2') format('woff2'); 
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: never; 
+}

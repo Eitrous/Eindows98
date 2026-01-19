@@ -17,13 +17,13 @@ function BlogApp() {
 
         <Cutout style={{ flex: 1, background: 'white', padding: '1rem', overflowY: 'auto' }}>
           {/* 文章标题 */}
-          <h2 style={{ marginTop: 0 }}>{selectedPost.title}</h2>
-          <p style={{ color: '#888', fontSize: '0.8rem' }}>发布于: {selectedPost.date}</p>
+          <h2 style={{ marginTop: 0, fontSize: '30px' }}>{selectedPost.title}</h2>
+          <p style={{ color: '#888', fontSize: '13px' }}>发布于: {selectedPost.date}</p>
           <Divider />
           
           {/* 2. 使用 ReactMarkdown 渲染内容 */}
           {/* 我们包了一层 div 来控制字体样式 */}
-          <div className="markdown-body" style={{ fontSize: '1rem', lineHeight: '1.6' }}>
+          <div className="markdown-body" style={{ fontSize: '1.3rem', lineHeight: '1.6' }}>
             <ReactMarkdown 
               components={{
                 // 3. 自定义渲染：我们要拦截 Markdown 里的元素，加上 Win98 的样式
@@ -72,7 +72,7 @@ function BlogApp() {
   // 下面是列表部分，不需要修改
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <p style={{ marginBottom: '0.5rem' }}>共有 {blogs.length} 篇文章：</p>
+      <p style={{ marginBottom: '0.5rem', fontSize: '14px' }}>共有 {blogs.length} 篇文章：</p>
       <Cutout style={{ flex: 1, background: 'white', padding: '0.5rem', overflowY: 'auto' }}>
         <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
           {blogs.map((post) => (
@@ -89,7 +89,7 @@ function BlogApp() {
               onMouseEnter={(e) => { e.currentTarget.style.background = '#000080'; e.currentTarget.style.color = 'white'; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'black'; }}
             >
-              <span>📄 {post.title}</span>
+              <span style={{ fontSize: '15px' }}>📄 {post.title}</span>
               <span>{post.date}</span>
             </li>
           ))}

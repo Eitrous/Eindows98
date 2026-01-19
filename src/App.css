@@ -50,6 +50,18 @@
 }
 
 .barSeparator {
-  margin-left: 4px;
+  margin-left: 3px;
   margin-right: 4px;
+}
+
+.barAppButton {
+  border: 1px;
+}
+
+.barAppButton:hover{ 
+  
+  border-left-color: aliceblue;
+  border-top-color: aliceblue;
+  border-bottom-color: azure;
+  border-right-color: azure;
 }

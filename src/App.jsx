@@ -626,10 +626,10 @@ function App() {
                     style={{
                       color: 'white',
                       fontWeight: 'bold',
-                      fontSize: '25px',
+                      fontSize: '22px',
                       position: 'absolute',
                       bottom: '5px',
-                      left: '32px',
+                      left: '31px',
                       transform: 'rotate(-90deg)',
                       transformOrigin: 'bottom left',
                       whiteSpace: 'nowrap',
@@ -638,7 +638,7 @@ function App() {
                     <span
                       style={{
                         fontFamily: 'sans-serif',
-                        fontWeight: '900',
+                        fontWeight: '800',
                       }}
                     >
                       Eindows
@@ -646,9 +646,10 @@ function App() {
                     <span
                       style={{
                         fontFamily: 'sans-serif',
-                        fontWeight: '400',
-                        fontSize: '24px',
+                        fontWeight: '300',
+                        fontSize: '23px',
                         marginLeft: '1px',
+                        marginTop: '0px'
                       }}
                     >
                       ⑨8

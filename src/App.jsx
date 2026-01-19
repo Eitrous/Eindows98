@@ -779,6 +779,7 @@ function App() {
           </div>
         </Toolbar>
       </AppBar>
+      <Analytics />
     </div>
   );
 }

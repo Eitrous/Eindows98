@@ -5,7 +5,7 @@ import App from './App.jsx';
 import original from 'react95/dist/themes/original';
 import { styleReset } from 'react95';
 import './fonts.css';
-import { Analytics } from "@vercel/analytics/react"
+
 
 const GlobalStyles = createGlobalStyle`
   ${styleReset}

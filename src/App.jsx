@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import styled from 'styled-components';
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from '@vercel/analytics/react';
 import { Rnd } from 'react-rnd';
 import {
   Window,
@@ -179,6 +179,10 @@ function App() {
 
   // 最大化
   const handleMaximize = (id) => {
+    const newZIndex = topZIndex + 1;
+    setTopZIndex(newZIndex);
+    setFocusedWindow(id);
+
     setOpenedWindows((prev) =>
       prev.map((w) => {
         if (w.id === id) {
@@ -190,6 +194,7 @@ function App() {
               y: w.prevY,
               width: w.prevW,
               height: w.prevH,
+              zIndex: newZIndex,
             };
           } else {
             return {
@@ -199,18 +204,18 @@ function App() {
               prevY: w.y,
               prevW: w.width,
               prevH: w.height,
-
+              changed: true,
               x: 0,
               y: 0,
               width: window.innerWidth,
-              height: window.innerHeight - 50,
+              height: window.innerHeight - 40,
+              zIndex: newZIndex,
             };
           }
         }
         return w;
       }),
     );
-    bringToFront(id);
   };
 
   // 监听浏览器窗口大小改变
@@ -223,7 +228,7 @@ function App() {
             return {
               ...w,
               width: window.innerWidth,
-              height: window.innerHeight - 50,
+              height: window.innerHeight - 40,
             };
           }
           return w;
@@ -267,9 +272,7 @@ function App() {
   };
 
   // 关机，跳转到正常页面
-  const shutDown = () => {
-
-  };
+  const shutDown = () => {};
 
   return (
     <div
@@ -359,9 +362,21 @@ function App() {
                   zIndex: window.zIndex - 1,
                   ...displayStyle,
                 }}>
-                <Window className='window'>
+                <Window className='window' style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    boxSizing: 'border-box',
+                  }}
+                >
                   <WindowHeader className='window-title'>
-                    <span style={{ display: 'flex', alignItems: 'center', fontSize: '16px'}}>
+                    <span
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        fontSize: '16px',
+                      }}>
                       <span style={{ marginRight: '5px' }}>
                         <img
                           src={window.icon}
@@ -417,7 +432,8 @@ function App() {
                   <WindowContent
                     style={{
                       flex: 1,
-                      overflow: 'hidden',
+                      overflow: 'auto',
+                      height: '100%',
                       display: 'flex',
                       flexDirection: 'column',
                     }}>
@@ -466,16 +482,21 @@ function App() {
                 pointerEvents: window.isDragging ? 'none' : 'auto',
               }}>
               {!window.isDragging && (
-                <Window className='window'>
-                  <WindowHeader 
-                    className='window-title' 
-                    active={ window.zIndex === topZIndex }
-                  >
+                <Window className='window' style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <WindowHeader
+                    className='window-title'
+                    active={window.zIndex === topZIndex}>
                     <span
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        fontSize: '16px'
+                        fontSize: '16px',
                       }}>
                       <span style={{ marginRight: '5px' }}>
                         <img
@@ -555,8 +576,8 @@ function App() {
                     }}
                     style={{
                       flex: 1,
-                      overflow: 'hidden',
-                      display: 'flex',
+                      height: '100%',
+                      overflow: 'auto',    
                       flexDirection: 'column',
                     }}>
                     {window.id === 'myComputer' && <MyComputerApp />}
@@ -574,8 +595,13 @@ function App() {
 
       {/* 任务栏 */}
       <AppBar style={{ bottom: 0, top: 'auto', height: '40px', zIndex: 9999 }}>
-        <Toolbar style={{ justifyContent: 'space-between', height: '100%', padding: '0 4px' }}>
-          <div 
+        <Toolbar
+          style={{
+            justifyContent: 'space-between',
+            height: '100%',
+            padding: '0 4px',
+          }}>
+          <div
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -589,15 +615,16 @@ function App() {
                 height: '32px',
                 fontWeight: 'normal',
                 fontSize: '16px',
-              }}
-            >
+              }}>
               <span style={{ marginRight: '4px' }}>🏁</span>开始
             </Button>
-            <Separator orientation= 'vertical' size='30px' className='barSeparator' style={{ marginLeft: '4px', marginRight: '4px' }} />
 
-            {/* 固定应用 */}
-            
-            <Separator orientation= 'vertical' size='30px' className='barSeparator' style={{ marginLeft: '4px', marginRight: '4px' }} />
+            <Separator
+              orientation='vertical'
+              size='30px'
+              className='barSeparator'
+              style={{ marginLeft: '4px', marginRight: '4px' }}
+            />
 
             {/* 开始菜单 */}
             {startMenuOpen && (
@@ -613,16 +640,14 @@ function App() {
                   borderColor: '#ffffff #000000 #000000 #ffffff',
                   padding: '2px',
                   zIndex: 10000,
-                }}
-              >
+                }}>
                 <div
                   style={{
                     width: '26px',
                     background: 'linear-gradient(to bottom, #000080, #000080)',
                     position: 'relative',
                     overflow: 'hidden',
-                  }}
-                >
+                  }}>
                   <span
                     style={{
                       color: 'white',
@@ -634,14 +659,12 @@ function App() {
                       transform: 'rotate(-90deg)',
                       transformOrigin: 'bottom left',
                       whiteSpace: 'nowrap',
-                    }}
-                  >
+                    }}>
                     <span
                       style={{
                         fontFamily: 'sans-serif',
                         fontWeight: '800',
-                      }}
-                    >
+                      }}>
                       Eindows
                     </span>
                     <span
@@ -650,132 +673,160 @@ function App() {
                         fontWeight: '300',
                         fontSize: '23px',
                         marginLeft: '1px',
-                        marginTop: '0px'
-                      }}
-                    >
+                        marginTop: '0px',
+                      }}>
                       ⑨8
                     </span>
                   </span>
-              </div>
+                </div>
 
-              <MenuList
+                <MenuList
+                  style={{
+                    boxShadow: 'none',
+                    border: 'none',
+                    padding: 0,
+                  }}>
+                  {/* 桌面应用 */}
+                  {APPLICATIONS.map((app) => {
+                    if (app.menu) {
+                      return (
+                        <>
+                          <MenuListItem
+                            onClick={() => {
+                              handleMenuClick();
+                              handleOpen(app);
+                            }}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'flex-start',
+                              gap: '10px',
+                              cursor: 'default',
+                              padding: '5px 10px',
+                            }}>
+                            <span style={{ marginRight: '10px' }}>
+                              <img
+                                src={app.icon}
+                                style={{
+                                  height: '30px',
+                                  marginTop: '15px',
+                                }}
+                              />
+                            </span>
+                            <span style={{ textAlign: 'left' }}>
+                              {app.title}
+                            </span>
+                          </MenuListItem>
+                        </>
+                      );
+                    }
+                  })}
+                  <Separator />
+                  {/* 其它应用 */}
+
+                  {/* 特殊按键 */}
+                  <MenuListItem
+                    onClick={() => {
+                      shutDown();
+                      handleMenuClick();
+                    }}>
+                    <span style={{ marginRight: '10px' }}>🏁</span>
+                    关闭系统
+                  </MenuListItem>
+                </MenuList>
+              </div>
+            )}
+          </div>
+            {/* 固定应用 */}
+
+            <Separator
+              orientation='vertical'
+              size='30px'
+              className='barSeparator'
+              style={{ marginLeft: '4px', marginRight: '4px' }}
+            />
+
+            
+          <div style={{
+              display: 'flex',
+              flex: 1,
+              overflow: 'hidden',
+              alignItems: 'center',
+              height: '100%',
+            }}
+          >
+            {/* 任务栏按钮 */}
+            {openedWindows.map((window) => {
+
+              return (
+              <Button
+                key={window.id}
+                active={!window.isMinimized && window.zIndex === topZIndex}
+                onClick={() => {
+                  if (window.isMaximized) {
+                    handleMinimize(window.id);
+                    bringToFront(window.id);
+                  } else {
+                    if (window.zIndex === topZIndex) {
+                      handleMinimize(window.id);
+                    } else {
+                      bringToFront(window.id);
+                    }
+                  }
+                }}
                 style={{
-                  boxShadow: 'none',
-                  border: 'none',
-                  padding: 0.
+                  fontWeight: 'bold',
+                  height: '32px',
+                  marginRight: '4px',
+                  justifyContent: 'flex-start',
+
+                  flex: 1,
+                  maxWidth: '150px',
+                  minWidth: '0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  overflow: 'hidden',
                 }}
               >
-
-                {/* 桌面应用 */}
-                {APPLICATIONS.map(app => {
-                  if (app.menu) {
-                    return (
-                      <>
-                        <MenuListItem
-                          onClick={() => {
-                            handleMenuClick();
-                            handleOpen(app);
-                          }}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            gap: '10px',
-                            cursor: 'default',
-                            padding: '5px 10px',
-                          }}
-                        >
-                          <span style={{ marginRight: '10px' }}>
-                            <img
-                              src={app.icon}
-                              style={{
-                                height: '30px',
-                                marginTop: '15px'
-                              }}
-                            />
-                          </span>
-                          <span style={{ textAlign: 'left' }}>
-                            {app.title}
-                          </span>
-                        </MenuListItem>
-                      </>
-                    );
-                  }
-                })}
-                <Separator />
-                {/* 其它应用 */}
-
-                {/* 特殊按键 */}
-                <MenuListItem
-                  onClick={() => {
-                    shutDown();
-                    handleMenuClick();
+                
+                <img
+                  src={window.icon}
+                  style={{
+                    height: '25px',
+                    flexShrink: 0,
+                  }}
+                />
+                
+                <span style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    width: '100%',
+                    textAlign: 'left',
                   }}
                 >
-                  <span style={{ marginRight: '10px' }}>
-                    🏁
-                  </span>
-                  关闭系统
-                </MenuListItem>
-              </MenuList>
-            </div>
-          )}
-
-          {/* 任务栏按钮 */}
-          {openedWindows.map((window) => (
-            <Button
-              key={window.id}
-              active={!window.isMinimized && window.zIndex === topZIndex}
-              onClick={() => {
-                if (window.isMaximized) {
-                  handleMinimize(window.id);
-                  bringToFront(window.id);
-                }
-                else {
-                  if (window.zIndex === topZIndex) {
-                    handleMinimize(window.id);
-                  }
-                  else {
-                    bringToFront(window.id);
-                  }
-                }
-              }
-            }
-            style={{
-              fontWeight: 'bold',
-              height: '32px',
-              marginRight: '4px',
-              minWidth: '180px',
-              maxWidth: '200px',
-              justifyContent: 'flex-start',
-            }}
-          >
-            <span style={{ marginRight: '4px' }}>
-              <img
-                src={window.icon}
-                style={{
-                  height: '25px',
-                }}
-              />
-            </span>
-            {window.title.length > 6 ? window.title.substring(0, 6) + '...' : window.title}
-          </Button>
-          ))}
-          
+                  {window.title}
+                </span>
+              </Button>
+            )})}
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Separator orientation='vertical' size='30px' className='barSeparator' style={{ marginLeft: '4px', marginRight: '4px' }} />
-          <Button 
-            variant='flat'
-            disabled
-            style={{
-              height: '30px',
-              fontSize: '16px',
-              fontWeight: 'lighter'
-            }}
-          >
-            {currentTime}
-          </Button>
+            <Separator
+              orientation='vertical'
+              size='30px'
+              className='barSeparator'
+              style={{ marginLeft: '4px', marginRight: '4px' }}
+            />
+            <Button
+              variant='flat'
+              disabled
+              style={{
+                height: '30px',
+                fontSize: '16px',
+                fontWeight: 'lighter',
+              }}>
+              {currentTime}
+            </Button>
           </div>
         </Toolbar>
       </AppBar>

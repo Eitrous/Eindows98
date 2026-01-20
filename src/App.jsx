@@ -3,6 +3,8 @@ import './App.css';
 import styled from 'styled-components';
 import { Analytics } from '@vercel/analytics/react';
 import { Rnd } from 'react-rnd';
+import { createGlobalStyle } from 'styled-components';
+import { styleReset } from 'react95';
 import {
   Window,
   WindowHeader,
@@ -35,7 +37,6 @@ import minimizeIcon from './assets/icon/minimize.png';
 import maximizeIcon from './assets/icon/maximize.png';
 import exitIcon from './assets/icon/exit.png';
 import restoreIcon from './assets/icon/restore.png';
-import pointerIcon from './assets/icon/pointer.png';
 import shutdownIcon from './assets/icon/shutdown.png';
 import startIcon from './assets/icon/start.png';
 
@@ -45,7 +46,6 @@ import OnlineNeighborApp from './OnlineNeighbor';
 import BlogApp from './Blog';
 import NotesApp from './Notes';
 import RecyclerApp from './Recycler';
-import { shadow } from 'react95/dist/common';
 
 // 定义一个只在悬浮时显示边框的按钮
 const QuickLaunchButton = styled(Button)`
@@ -207,7 +207,11 @@ function App() {
   const handleDragStart = (id) => {
     bringToFront(id);
     setOpenedWindows((prev) =>
-      prev.map((w) => (w.id === id ? { ...w, isDragging: true, dragDeltaX: 0, dragDeltaY: 0 } : w)),
+      prev.map((w) =>
+        w.id === id
+          ? { ...w, isDragging: true, dragDeltaX: 0, dragDeltaY: 0 }
+          : w,
+      ),
     );
   };
 
@@ -216,14 +220,14 @@ function App() {
       prev.map((w) => {
         if (w.id === id) {
           // 计算当前 Rnd 的位置和原始位置的差值
-          return { 
-            ...w, 
-            dragDeltaX: d.x - w.x, 
-            dragDeltaY: d.y - w.y 
+          return {
+            ...w,
+            dragDeltaX: d.x - w.x,
+            dragDeltaY: d.y - w.y,
           };
         }
         return w;
-      })
+      }),
     );
   };
 
@@ -373,11 +377,11 @@ function App() {
         left: 0,
         width: '100%',
         height: '100%',
-        zIndex: 999999, 
-        pointerEvents: 'none', 
-        
-        mixBlendMode: 'difference', 
-        
+        zIndex: 999999,
+        pointerEvents: 'none',
+
+        mixBlendMode: 'difference',
+
         backgroundImage: `
           linear-gradient(90deg, white 50%, transparent 50%), 
           linear-gradient(90deg, white 50%, transparent 50%), 
@@ -385,8 +389,8 @@ function App() {
           linear-gradient(0deg, white 50%, transparent 50%)
         `,
         backgroundRepeat: 'repeat-x, repeat-x, repeat-y, repeat-y',
-        
-        backgroundSize: '4px 2px, 4px 2px, 2px 4px, 2px 4px', 
+
+        backgroundSize: '4px 2px, 4px 2px, 2px 4px, 2px 4px',
         backgroundPosition: '0 0, 0 100%, 0 0, 100% 0',
       }}
     />
@@ -395,7 +399,7 @@ function App() {
   // 关机弹窗
   const openShutdownModal = () => {
     setShowShutdownModal(true);
-    setStartMenuOpen(false); 
+    setStartMenuOpen(false);
   };
 
   // 执行关机
@@ -492,7 +496,9 @@ function App() {
       </div>
 
       {openedWindows.map((window) => {
-        const displayStyle = window.isMinimized ? { display: 'none' } : { display: 'flex' };
+        const displayStyle = window.isMinimized
+          ? { display: 'none' }
+          : { display: 'flex' };
         const isDragging = window.isDragging;
 
         return (
@@ -500,11 +506,9 @@ function App() {
             key={window.id}
             size={{ width: window.width, height: window.height }}
             position={{ x: window.x, y: window.y }}
-            
             onDragStart={() => handleDragStart(window.id)}
-            onDrag={(e, d) => handleDrag(window.id, d)} 
+            onDrag={(e, d) => handleDrag(window.id, d)}
             onDragStop={(e, d) => updateWindowPos(window.id, d)}
-            
             onResizeStop={(e, direction, ref, delta, position) =>
               updateWindowSize(window.id, ref, position)
             }
@@ -513,12 +517,10 @@ function App() {
               setFocusedWindow(window.id);
             }}
             onClick={() => setFocusedWindow(window.id)}
-            
             disableDragging={window.isMaximized}
             enableResizing={!window.isMaximized}
             bounds='parent'
             dragHandleClassName='window-title'
-            
             style={{
               zIndex: window.zIndex,
               ...displayStyle,
@@ -526,44 +528,110 @@ function App() {
               // outline: isDragging ? '2px dashed #000000' : 'none',
 
               background: 'transparent',
-            }}
-          >
+            }}>
             {isDragging && !window.isMaximized && <GhostBorder />}
-            <Window 
+            <Window
               className='window'
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                display: 'flex', 
-                flexDirection: 'column', 
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
                 boxSizing: 'border-box',
-                
-                transform: isDragging 
-                  ? `translate(${-window.dragDeltaX}px, ${-window.dragDeltaY}px)` 
+                pointerEvents: isDragging ? 'none' : 'auto',
+
+                transform: isDragging
+                  ? `translate(${-window.dragDeltaX}px, ${-window.dragDeltaY}px)`
                   : 'none',
-                  
+
                 transition: 'none',
-              }}
-            >
+              }}>
               <WindowHeader
                 className='window-title'
                 active={window.zIndex === topZIndex}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'default' }}
-              >
-                <span style={{ display: 'flex', alignItems: 'center', fontSize: '16px' }}>
-                  <img src={window.icon} style={{ height: '20px', marginRight: '5px' }} />
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'default',
+                }}>
+                <span
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    fontSize: '16px',
+                  }}>
+                  <img
+                    src={window.icon}
+                    style={{ height: '20px', marginRight: '5px' }}
+                  />
                   {window.title}
                 </span>
                 <div style={{ display: 'flex' }}>
-                  <Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); handleMinimize(window.id); }} size='sm' square style={{ marginRight: '2px' }}><span style={{transform: 'translateY(-2px)'}}>_</span></Button>
-                  <Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); handleMaximize(window.id); }} size='sm' square style={{ marginRight: '2px' }}><span>{window.isMaximized ? '❐' : '□'}</span></Button>
-                  <Button onMouseDown={(e) => e.stopPropagation()} onClick={(e) => { e.stopPropagation(); handleClose(window.id); }} size='sm' square><span style={{fontWeight:'bold'}}>X</span></Button>
+                  <Button
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMinimize(window.id);
+                    }}
+                    size='sm'
+                    square
+                    style={{ marginRight: '2px' }}>
+                    <span style={{ transform: 'translateY(-2px)' }}>
+                      <img
+                        src={minimizeIcon}
+                        title='最小化'
+                        className='controlIcon'
+                      />
+                    </span>
+                  </Button>
+
+                  <Button
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMaximize(window.id);
+                    }}
+                    size='sm'
+                    square
+                    style={{ marginRight: '2px' }}>
+                    <span>
+                      <img
+                        src={window.isMaximized ? restoreIcon : maximizeIcon}
+                        title={window.isMaximized ? '恢复' : '最大化'}
+                        className='controlIcon'
+                      />
+                    </span>
+                  </Button>
+
+                  <Button
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClose(window.id);
+                    }}
+                    size='sm'
+                    square>
+                    <span>
+                      <img
+                        src={exitIcon}
+                        title='关闭'
+                        className='controlIcon'
+                      />
+                    </span>
+                  </Button>
                 </div>
               </WindowHeader>
 
               <WindowContent
-                style={{ flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column', padding: '0.25rem', position: 'relative' }}
-              >
+                style={{
+                  flex: 1,
+                  overflow: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '0.25rem',
+                  position: 'relative',
+                }}>
                 {window.id === 'myComputer' && <MyComputerApp />}
                 {window.id === 'onlineNeighbor' && <OnlineNeighborApp />}
                 {window.id === 'blog' && <BlogApp />}
@@ -698,7 +766,9 @@ function App() {
                               }}
                             />
                           </span>
-                          <span style={{ textAlign: 'left', fontSize: '14px' }}>{app.title}</span>
+                          <span style={{ textAlign: 'left', fontSize: '14px' }}>
+                            {app.title}
+                          </span>
                         </MenuListItem>
                       );
                     }
@@ -716,7 +786,9 @@ function App() {
                       variant='flat'
                       style={{ marginLeft: '17px', marginTop: '10px' }}
                     />
-                    <span style={{ marginLeft: '20px', fontSize: '14px' }}>CRT</span>
+                    <span style={{ marginLeft: '20px', fontSize: '14px' }}>
+                      CRT
+                    </span>
                   </span>
 
                   {/* 关机 */}
@@ -725,14 +797,16 @@ function App() {
                       openShutdownModal();
                       handleMenuClick();
                     }}>
-                    <img 
-                      src={shutdownIcon} 
+                    <img
+                      src={shutdownIcon}
                       style={{
                         height: '30px',
                         marginTop: '2px',
                       }}
                     />
-                    <span style={{ marginRight: '4px', fontSize: '14px' }}>关闭系统</span>
+                    <span style={{ marginRight: '4px', fontSize: '14px' }}>
+                      关闭系统
+                    </span>
                   </MenuListItem>
                 </MenuList>
               </div>
@@ -885,7 +959,7 @@ function App() {
               <div
                 style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
                 <img
-                  src={shutdownIcon} 
+                  src={shutdownIcon}
                   alt='shutdown'
                   style={{
                     width: '48px',
@@ -996,7 +1070,7 @@ function App() {
               transform: 'scale(1.2, 0.7)', // X轴拉长到1.2倍，Y轴压扁到0.7倍
               transformOrigin: 'center',
 
-              textShadow: '0 0 1px #ffb000'
+              textShadow: '0 0 1px #ffb000',
             }}>
             现在可以安全地关闭计算机了
           </span>

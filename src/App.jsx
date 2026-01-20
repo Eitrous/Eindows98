@@ -417,9 +417,11 @@ function App() {
 
     setIsShuttingDown('1');
 
-    setTimeout(() => {
-      setIsShuttingDown('2');
-    }, 1000);
+    if (shutdownOption === '1') {
+        setTimeout(() => {
+        setIsShuttingDown('2');
+      }, 1000);
+    }
 
     setTimeout(() => {
       window.location.href = targetUrl;
@@ -1043,7 +1045,7 @@ function App() {
           }}
         />
       )}
-      {isShuttingDown === '2' && (
+      {isShuttingDown === '2' && shutdownOption === '1' && (
         <div
           style={{
             position: 'fixed',

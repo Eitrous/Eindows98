@@ -944,7 +944,7 @@ function App() {
                 justifyContent: 'space-between',
               }}>
               <span style={{ marginLeft: '3px', fontSize: '16px' }}>
-                关闭 Windows
+                关闭 Eindows
               </span>
               <Button
                 onClick={() => setShowShutdownModal(false)}

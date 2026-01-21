@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import styled from 'styled-components';
 import { Analytics } from '@vercel/analytics/react';
 import { Rnd } from 'react-rnd';
-import { createGlobalStyle } from 'styled-components';
-import { styleReset } from 'react95';
 import {
   Window,
   WindowHeader,

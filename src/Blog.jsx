@@ -1,10 +1,9 @@
-import React, { useState, useMemo, memo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import { Button, Divider, ScrollView } from 'react95';
 import ReactMarkdown from 'react-markdown'; // 1. 引入库
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { blogs } from './blogData';
-import styled from 'styled-components';
 
 
 function BlogApp() {
